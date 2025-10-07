@@ -3,9 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background: radial-gradient(circle at center, #4A90E2 0%, #B86FD1 70%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite, fadeIn 2s ease-in-out;
       font-family: "Poppins", sans-serif;
       display: flex;
       flex-direction: column;
@@ -14,39 +23,139 @@
       height: 100vh;
       margin: 0;
       overflow: hidden;
-      animation: fadeIn 2s ease-in-out;
+      position: relative;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
-    h1 {
-      color: #4b3aa8;
+    /* Floating particles background */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .title {
+      color: #ffffff;
       margin-bottom: 40px;
-      font-weight: 600;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      font-weight: 300;
+      font-size: 2.5rem;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      text-align: center;
+      z-index: 10;
+      position: relative;
+      opacity: 0;
+      animation: titleSlideIn 1.5s ease-out 0.5s forwards;
+    }
+
+    @keyframes titleSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .envelope-container {
       position: relative;
-      width: 240px;
-      height: 160px;
-      perspective: 1000px;
+      width: 300px;
+      height: 200px;
+      perspective: 1200px;
+      z-index: 10;
+      animation: envelopeEntrance 1.8s ease-out 1s both;
+    }
+
+    @keyframes envelopeEntrance {
+      0% {
+        opacity: 0;
+        transform: scale(0.8) rotateY(20deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotateY(0deg);
+      }
     }
 
     .envelope {
       position: absolute;
       width: 100%;
       height: 100%;
-      background: #f7f7ff;
-      border: 2px solid #b0b4ff;
-      border-radius: 8px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+      border: 3px solid #e8ecff;
+      border-radius: 12px;
+      box-shadow: 
+        0 20px 40px rgba(0,0,0,0.15),
+        0 8px 16px rgba(0,0,0,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.8);
       cursor: pointer;
-      transition: transform 0.4s ease, opacity 0.6s ease;
+      transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
       overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .envelope:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 
+        0 25px 50px rgba(0,0,0,0.2),
+        0 12px 24px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
+    .envelope::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .envelope:hover::before {
+      transform: translateX(100%);
     }
 
     .flap {
@@ -55,13 +164,15 @@
       left: 0;
       width: 0;
       height: 0;
-      border-left: 120px solid transparent;
-      border-right: 120px solid transparent;
-      border-bottom: 80px solid #a6a2f7;
-      border-radius: 8px 8px 0 0;
-      transform-origin: top;
-      transition: transform 0.7s ease;
+      border-left: 150px solid transparent;
+      border-right: 150px solid transparent;
+      border-bottom: 100px solid #a855f7;
+      background: linear-gradient(145deg, #a855f7 0%, #d946ef 100%);
+      border-radius: 12px 12px 0 0;
+      transform-origin: top center;
+      transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
       z-index: 3;
+      box-shadow: 0 4px 8px rgba(168, 85, 247, 0.3);
     }
 
     .heart {
@@ -69,77 +180,226 @@
       top: 48%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 40px;
-      height: 40px;
-      background-color: red;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(145deg, #ef4444 0%, #dc2626 100%);
       clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 50% 80%, 20% 100%, 0% 35%);
       z-index: 4;
-      animation: pulse 1.5s infinite;
-      transition: transform 0.5s ease, opacity 0.5s ease;
+      animation: heartPulse 2s infinite ease-in-out;
+      transition: all 0.5s ease;
+      filter: drop-shadow(0 4px 8px rgba(239, 68, 68, 0.4));
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.1); }
+    @keyframes heartPulse {
+      0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        filter: drop-shadow(0 4px 8px rgba(239, 68, 68, 0.4));
+      }
+      50% { 
+        transform: translate(-50%, -50%) scale(1.15);
+        filter: drop-shadow(0 6px 12px rgba(239, 68, 68, 0.6));
+      }
     }
 
     .envelope.open .flap {
       transform: rotateX(180deg);
+      box-shadow: 0 -4px 8px rgba(168, 85, 247, 0.2);
     }
 
     .envelope.fade-out {
-      transform: scale(0.9);
+      transform: scale(0.95);
       opacity: 0;
+      filter: blur(2px);
     }
 
-    /* Mensagem suave do centro */
+    /* Enhanced message styling */
     .message {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0);
       text-align: center;
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       color: #ffffff;
       opacity: 0;
-      white-space: nowrap;
-      font-weight: 500;
-      transition: opacity 1s ease, transform 0.8s ease;
+      max-width: 90vw;
+      white-space: normal;
+      font-weight: 400;
+      line-height: 1.4;
+      transition: all 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      padding: 30px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
 
     .message.visible {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
-      animation: popIn 1s cubic-bezier(0.25, 1, 0.5, 1);
+      animation: messagePopIn 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
-    @keyframes popIn {
-      0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-      70% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    @keyframes messagePopIn {
+      0% { 
+        transform: translate(-50%, -50%) scale(0.3) rotateY(90deg);
+        opacity: 0;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.05) rotateY(0deg);
+        opacity: 1;
+      }
+      100% { 
+        transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+        opacity: 1;
+      }
     }
 
-    footer {
+    /* Typing animation for message text */
+    .message-text {
+      overflow: hidden;
+      border-right: 2px solid #ffffff;
+      white-space: nowrap;
+      margin: 0 auto;
+      animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #ffffff; }
+    }
+
+    .footer {
       position: absolute;
-      bottom: 20px;
+      bottom: 30px;
       color: #ffffff;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
+      font-weight: 300;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      z-index: 10;
+      opacity: 0;
+      animation: footerSlideUp 1.5s ease-out 2s forwards;
+    }
+
+    @keyframes footerSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Floating hearts animation */
+    .floating-heart {
+      position: absolute;
+      color: #ff6b9d;
+      font-size: 1.5rem;
+      pointer-events: none;
+      animation: floatHeart 4s ease-out forwards;
+      z-index: 5;
+    }
+
+    @keyframes floatHeart {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(0.3);
+      }
     }
   </style>
 </head>
 <body>
+  <div class="particles"></div>
   
   <div class="envelope-container">
     <div class="envelope" id="envelope">
       <div class="flap"></div>
       <div class="heart"></div>
     </div>
-    <div class="message" id="message">Clica no envelope para abrir 🤍</div>
+    <div class="message" id="message">
+      <div class="message-text"></div>
+    </div>
   </div>
 
-  <footer>Com carinho, Denys 🤍</footer>
+  <footer class="footer">Com carinho, Denys 🤍</footer>
 
 <script>
+  // Create floating particles
+  function createParticles() {
+    const particlesContainer = document.querySelector('.particles');
+    
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      
+      // Random size between 2px and 8px
+      const size = Math.random() * 6 + 2;
+      particle.style.width = size + 'px';
+      particle.style.height = size + 'px';
+      
+      // Random horizontal position
+      particle.style.left = Math.random() * 100 + '%';
+      
+      // Random animation delay
+      particle.style.animationDelay = Math.random() * 20 + 's';
+      
+      // Random animation duration
+      particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+      
+      particlesContainer.appendChild(particle);
+    }
+  }
+
+  // Create floating hearts effect
+  function createFloatingHeart(x, y) {
+    const heart = document.createElement('div');
+    heart.className = 'floating-heart';
+    heart.innerHTML = '🤍';
+    heart.style.left = x + 'px';
+    heart.style.top = y + 'px';
+    
+    document.body.appendChild(heart);
+    
+    setTimeout(() => {
+      heart.remove();
+    }, 4000);
+  }
+
+  // Typing effect for message
+  function typeMessage(element, text, speed = 50) {
+    element.innerHTML = '';
+    element.style.borderRight = '2px solid #ffffff';
+    let i = 0;
+    
+    function type() {
+      if (i < text.length) {
+        element.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(type, speed);
+      } else {
+        // Remove cursor after typing is complete
+        setTimeout(() => {
+          element.style.borderRight = 'none';
+        }, 1000);
+      }
+    }
+    
+    type();
+  }
+
   const mensagens = [
     "Bom dia, fofinha. Que o teu dia comece com um sorriso tão bonito como o teu.",
     "Hoje vai correr tudo bem, fofinha. Acredita em ti, és mais forte do que pensas.",
@@ -175,13 +435,35 @@
 
   const envelope = document.getElementById("envelope");
   const messageBox = document.getElementById("message");
+  let isOpened = false;
 
-  envelope.addEventListener("click", () => {
+  // Initialize particles
+  createParticles();
+
+  // Enhanced envelope click handler
+  envelope.addEventListener("click", (e) => {
+    if (isOpened) return;
+    isOpened = true;
+
+    // Create floating hearts at click position
+    const rect = envelope.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        createFloatingHeart(
+          rect.left + x + (Math.random() - 0.5) * 100,
+          rect.top + y + (Math.random() - 0.5) * 100
+        );
+      }, i * 200);
+    }
+
     envelope.classList.add("open");
 
     setTimeout(() => {
       envelope.classList.add("fade-out");
-    }, 700);
+    }, 800);
 
     const data = new Date();
     let dia = data.getDate();
@@ -189,9 +471,33 @@
     const mensagem = mensagens[dia - 1];
 
     setTimeout(() => {
-      messageBox.textContent = mensagem;
       messageBox.classList.add("visible");
-    }, 1100);
+      
+      setTimeout(() => {
+        const messageText = messageBox.querySelector('.message-text');
+        typeMessage(messageText, mensagem, 30);
+      }, 600);
+    }, 1200);
+  });
+
+  // Add hover effect for envelope
+  envelope.addEventListener("mouseenter", () => {
+    if (!isOpened) {
+      envelope.style.transform = "translateY(-5px) scale(1.02)";
+    }
+  });
+
+  envelope.addEventListener("mouseleave", () => {
+    if (!isOpened) {
+      envelope.style.transform = "translateY(0) scale(1)";
+    }
+  });
+
+  // Add click effect to create hearts randomly
+  document.addEventListener('click', (e) => {
+    if (e.target !== envelope && !envelope.contains(e.target)) {
+      createFloatingHeart(e.clientX, e.clientY);
+    }
   });
 </script>
 </body>
