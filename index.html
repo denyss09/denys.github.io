@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: radial-gradient(circle at center, #4A90E2 0%, #B86FD1 70%);
+      font-family: "Poppins", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    h1 {
+      color: #4b3aa8;
+      margin-bottom: 40px;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .envelope-container {
+      position: relative;
+      width: 240px;
+      height: 160px;
+      perspective: 1000px;
+    }
+
+    .envelope {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: #f7f7ff;
+      border: 2px solid #b0b4ff;
+      border-radius: 8px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: transform 0.4s ease, opacity 0.6s ease;
+      overflow: hidden;
+    }
+
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 120px solid transparent;
+      border-right: 120px solid transparent;
+      border-bottom: 80px solid #a6a2f7;
+      border-radius: 8px 8px 0 0;
+      transform-origin: top;
+      transition: transform 0.7s ease;
+      z-index: 3;
+    }
+
+    .heart {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background-color: red;
+      clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 50% 80%, 20% 100%, 0% 35%);
+      z-index: 4;
+      animation: pulse 1.5s infinite;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    .envelope.open .flap {
+      transform: rotateX(180deg);
+    }
+
+    .envelope.fade-out {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+
+    /* Mensagem suave do centro */
+    .message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      text-align: center;
+      font-size: 1.6rem;
+      color: #ffffff;
+      opacity: 0;
+      white-space: nowrap;
+      font-weight: 500;
+      transition: opacity 1s ease, transform 0.8s ease;
+    }
+
+    .message.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      animation: popIn 1s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    @keyframes popIn {
+      0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+      70% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      color: #ffffff;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="envelope-container">
+    <div class="envelope" id="envelope">
+      <div class="flap"></div>
+      <div class="heart"></div>
+    </div>
+    <div class="message" id="message">Clica no envelope para abrir 🤍</div>
+  </div>
+
+  <footer>Com carinho, Denys 🤍</footer>
+
+<script>
+  const mensagens = [
+    "Bom dia, fofinha. Que o teu dia comece com um sorriso tão bonito como o teu.",
+    "Hoje vai correr tudo bem, fofinha. Acredita em ti, és mais forte do que pensas.",
+    "Fofinha, respira fundo. Tu consegues lidar com qualquer coisa que apareça.",
+    "Que nunca te falte coragem para sonhar e paciência para conquistar.",
+    "Olha-te, fofinha: linda, inteligente e capaz de tudo o que quiseres.",
+    "Mesmo nos dias mais cinzentos, tu consegues trazer luz.",
+    "fofinha respira fundo. Tu consegues lidar com qualquer coisa que apareça :)",
+    "Lembra-te: um passo de cada vez também é progresso.",
+    "Hoje mereces sorrir sem motivo, só porque sim, fofinha.",
+    "As coisas boas chegam para quem espalha coisas boas, e tu espalhas muitas.",
+    "Fofinha, o mundo fica mais bonito só porque tu existes.",
+    "Acredita em ti como eu acredito, e vais longe.",
+    "Quando duvidares de ti, lembra-te: és o orgulho de alguém que te adora.",
+    "Fofinha, o teu coração é a tua maior força.",
+    "Um dia difícil não apaga a pessoa incrível que tu és.",
+    "Lembra-te: descansar também faz parte de cuidar de ti.",
+    "Fofinha, cuida de ti hoje. Mereces estar bem.",
+    "Se o dia estiver pesado, pensa em mim a abraçar-te.",
+    "A tua bondade faz diferença, mesmo quando não percebes.",
+    "Fofinha, continua a brilhar com essa energia linda que só tu tens.",
+    "Hoje é o dia perfeito para acreditares que mereces o melhor.",
+    "Se tropeçares, levanta-te e ri. És humana e és maravilhosa.",
+    "Fofinha, nunca deixes de ser gentil. É o que te torna especial.",
+    "Mesmo quando ficas em silêncio, a tua presença traz calma.",
+    "A vida é mais leve quando és tu mesma. E eu adoro-te assim.",
+    "Fofinha, tu consegues. Mesmo quando duvidas, eu acredito em ti.",
+    "As estrelas deviam aprender contigo o que é brilhar.",
+    "Lembra-te: tudo o que fazes com amor, cresce bonito.",
+    "Fofinha, és motivo de orgulho, paz e carinho. Nunca te esqueças.",
+    "E para fechar o mês: amo-te e acredito em ti, hoje e sempre."
+  ];
+
+  const envelope = document.getElementById("envelope");
+  const messageBox = document.getElementById("message");
+
+  envelope.addEventListener("click", () => {
+    envelope.classList.add("open");
+
+    setTimeout(() => {
+      envelope.classList.add("fade-out");
+    }, 700);
+
+    const data = new Date();
+    let dia = data.getDate();
+    if (dia > 30) dia = 30;
+    const mensagem = mensagens[dia - 1];
+
+    setTimeout(() => {
+      messageBox.textContent = mensagem;
+      messageBox.classList.add("visible");
+    }, 1100);
+  });
+</script>
+</body>
+</html>
