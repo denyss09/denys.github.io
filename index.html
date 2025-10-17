@@ -81,7 +81,10 @@
       text-shadow: 0 4px 8px rgba(0,0,0,0.3);
       text-align: center;
       z-index: 10;
-      position: relative;
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
       opacity: 0;
       animation: titleSlideIn 1.5s ease-out 0.5s forwards;
     }
@@ -89,31 +92,61 @@
     @keyframes titleSlideIn {
       0% {
         opacity: 0;
-        transform: translateY(-30px);
+        transform: translateX(-50%) translateY(-30px);
       }
       100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateX(-50%) translateY(0);
       }
     }
 
     .envelope-container {
-      position: relative;
-      width: 300px;
-      height: 200px;
+      position: absolute;
+      width: 180px;
+      height: 120px;
       perspective: 1200px;
       z-index: 10;
-      animation: envelopeEntrance 1.8s ease-out 1s both;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: left 0.3s ease-in-out, top 0.3s ease-in-out, transform 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .envelope-container.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .envelope-container.moving {
+      animation: envelopeEntrance 1.8s ease-out 0s both;
     }
 
     @keyframes envelopeEntrance {
       0% {
         opacity: 0;
-        transform: scale(0.8) rotateY(20deg);
+        transform: translate(-50%, -50%) scale(0.5) rotateY(20deg);
       }
       100% {
         opacity: 1;
-        transform: scale(1) rotateY(0deg);
+        transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+      }
+    }
+
+    .envelope-container.caught {
+      animation: envelopeCaught 0.8s ease-out forwards !important;
+    }
+
+    @keyframes envelopeCaught {
+      0% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.3) rotate(15deg);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
       }
     }
 
@@ -135,11 +168,13 @@
     }
 
     .envelope:hover {
-      transform: translateY(-5px) scale(1.02);
+      transform: translateY(-8px) scale(1.05);
       box-shadow: 
-        0 25px 50px rgba(0,0,0,0.2),
-        0 12px 24px rgba(0,0,0,0.15),
-        inset 0 1px 0 rgba(255,255,255,0.9);
+        0 28px 56px rgba(0,0,0,0.25),
+        0 12px 24px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.9),
+        0 0 30px rgba(168, 85, 247, 0.4);
+      filter: brightness(1.1);
     }
 
     .envelope::before {
@@ -164,9 +199,9 @@
       left: 0;
       width: 0;
       height: 0;
-      border-left: 150px solid transparent;
-      border-right: 150px solid transparent;
-      border-bottom: 100px solid #a855f7;
+      border-left: 90px solid transparent;
+      border-right: 90px solid transparent;
+      border-bottom: 60px solid #a855f7;
       background: linear-gradient(145deg, #a855f7 0%, #d946ef 100%);
       border-radius: 12px 12px 0 0;
       transform-origin: top center;
@@ -180,8 +215,8 @@
       top: 48%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 50px;
-      height: 50px;
+      width: 35px;
+      height: 35px;
       background: linear-gradient(145deg, #ef4444 0%, #dc2626 100%);
       clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 50% 80%, 20% 100%, 0% 35%);
       z-index: 4;
@@ -319,12 +354,97 @@
         transform: translateY(-100px) scale(0.3);
       }
     }
+
+    /* Challenge screen styling */
+    .challenge-screen {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 20;
+      opacity: 1;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .challenge-screen.hidden {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.8);
+      pointer-events: none;
+    }
+
+    .challenge-question {
+      font-size: 2.2rem;
+      color: #ffffff;
+      font-weight: 400;
+      margin-bottom: 40px;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      animation: fadeInScale 1s ease-out;
+    }
+
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .challenge-buttons {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      animation: fadeInScale 1s ease-out 0.3s both;
+    }
+
+    .challenge-button {
+      background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+      border: 3px solid #e8ecff;
+      padding: 20px 50px;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #764ba2;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+      box-shadow: 
+        0 10px 30px rgba(0,0,0,0.15),
+        0 4px 8px rgba(0,0,0,0.1);
+      font-family: "Poppins", sans-serif;
+    }
+
+    .challenge-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 
+        0 15px 40px rgba(0,0,0,0.2),
+        0 8px 16px rgba(0,0,0,0.15),
+        0 0 30px rgba(168, 85, 247, 0.4);
+      background: linear-gradient(145deg, #ffffff 0%, #f0f2ff 100%);
+    }
+
+    .challenge-button:active {
+      transform: translateY(-2px) scale(1.02);
+    }
   </style>
 </head>
 <body>
   <div class="particles"></div>
   
-  <div class="envelope-container">
+  <!-- Challenge Screen -->
+  <div class="challenge-screen" id="challengeScreen">
+    <div class="challenge-question">
+      Aceitas um desafio? 🤍
+    </div>
+    <div class="challenge-buttons">
+      <button class="challenge-button" onclick="startChallenge()">Sim</button>
+      <button class="challenge-button" onclick="startChallenge()">Sim</button>
+    </div>
+  </div>
+  
+  <div class="envelope-container" id="envelopeContainer">
     <div class="envelope" id="envelope">
       <div class="flap"></div>
       <div class="heart"></div>
@@ -400,63 +520,158 @@
     type();
   }
 
-  const mensagens = [
-    "Bom dia, fofinha. Que o teu dia comece com um sorriso tão bonito como o teu.",
-    "Hoje vai correr tudo bem, fofinha. Acredita em ti, és mais forte do que pensas.",
-    "Fofinha, respira fundo. Tu consegues lidar com qualquer coisa que apareça.",
-    "Que nunca te falte coragem para sonhar e paciência para conquistar.",
-    "Olha-te, fofinha: linda, inteligente e capaz de tudo o que quiseres.",
-    "Mesmo nos dias mais cinzentos, tu consegues trazer luz.",
-    "fofinha respira fundo. Tu consegues lidar com qualquer coisa que apareça :)",
-    "Bom dia fofinha!! Que o teu dia comece com um sorriso tão bonito como o teu :)",
-    "Hoje vai correr tudo bem fofinha. Tou a torcer por ti. Tu vais conseguir! 🤍",
-    "gosto muito de ti fofinha 🤍",
-    "o mundo fica mais bonito contigo fofinha 🤍",
-    "Acredita em ti como eu acredito",
-    "Bom dia fofinha!! Que o teu dia comece com um sorriso tão bonito como o teu :)",
-    "Bom dia fofinha!! Que o teu dia comece com um sorriso tão bonito como o teu :)",
-    "Bom dia fofinha!! Que o teu dia comece com um sorriso tão bonito como o teu :)",
-    "Bom dia fofinha!! Que o teu dia comece com um sorriso tão bonito como o teu :)",
-    "Bom dia fofinha!! Que o teu dia comece com um sorriso tão bonito como o teu :)",
-    "Se o dia estiver pesado, pensa em mim a abraçar-te.",
-    "A tua bondade faz diferença, mesmo quando não percebes.",
-    "Fofinha, continua a brilhar com essa energia linda que só tu tens.",
-    "Hoje é o dia perfeito para acreditares que mereces o melhor.",
-    "Se tropeçares, levanta-te e ri. És humana e és maravilhosa.",
-    "Fofinha, nunca deixes de ser gentil. É o que te torna especial.",
-    "Mesmo quando ficas em silêncio, a tua presença traz calma.",
-    "A vida é mais leve quando és tu mesma. E eu adoro-te assim.",
-    "Fofinha, tu consegues. Mesmo quando duvidas, eu acredito em ti.",
-    "As estrelas deviam aprender contigo o que é brilhar.",
-    "Lembra-te: tudo o que fazes com amor, cresce bonito.",
-    "Fofinha, és motivo de orgulho, paz e carinho. Nunca te esqueças.",
-    "E para fechar o mês: amo-te e acredito em ti, hoje e sempre."
-  ];
+const mensagens = [
+  "bom dia fofinha! Acordei a pensar em ti outra vez… espero que o teu dia seja incrível hoje",
+  "princesa acredita em ti! És capaz de muito mais do que imaginas. Eu acredito sempre.",
+  "fofinha sei que às vezes temos dias difíceis, mas tu és mais forte!",
+  "mesmo longe, tu consegues melhorar o meu dia só por existires.",
+  "a tua forma de ser inspira-me princesa. És linda por fora, mas ainda mais por dentro.",
+  "fofinha não te esqueças de sorrir hoje! o teu sorriso muda tudo.",
+  "amo-te. Simples assim. Hoje, amanhã e sempre.",
+  "princesa hoje vai correr bem. Um passo de cada vez, e eu estou a torcer por ti como sempre.",
+  "fofinha tenho tanto orgulho em ti. por seres quem és.",
+  "és o meu conforto, a minha calma e o meu caos preferido.",
+  "princesa espero que o teu dia te abrace como eu queria abraçar-te agora.",
+  "fofinha, só quero lembrar-te que és incrível, mesmo nos dias em que duvidas disso.",
+  "gosto tanto de ti. E o gosto só cresce a cada dia 🤍",
+  "amo-te tanto fofinha 🤍 ",
+  "fofinha não deixes que nada te roube a paz hoje. Respira, sorri, e vai com calma.",
+  "hoje vai correr tudo bem fofinha 🤍",
+  "espero que saibas o quanto és especial para mim 🤍",
+  "espero que saibas o quanto és especial para mim 🤍",
+  "tu mereces tudo o que há de bonito neste mundo, e eu quero ajudar-te a alcançar cada pedacinho.",
+  "amo-te tanto fofinha 🤍",
+  "és maravilhosa, lindissima e incrível. Nunca te esqueças disso 🤍",
+  "O meu dia fica sempre melhor quando estou ou falo contigo. sempre.",
+  "princesa espero que o teu dia te abrace como eu queria abraçar-te agora",
+  "princesa espero que o teu dia te abrace como eu queria abraçar-te agora",
+  "és a melhor parte dos meus dias 🤍",
+  "o mundo é mais bonito porque tu estás nele 🤍",
+  "amo-te. Simples assim. Hoje, amanhã e sempre",
+  "amo-te. Simples assim. Hoje, amanhã e sempre",
+  "amo-te. Simples assim. Hoje, amanhã e sempre",
+  "amo-te. Simples assim. Hoje, amanhã e sempre."
+];
+
 
   const envelope = document.getElementById("envelope");
+  const envelopeContainer = document.querySelector(".envelope-container");
   const messageBox = document.getElementById("message");
+  const challengeScreen = document.getElementById("challengeScreen");
   let isOpened = false;
+  let moveInterval;
+  let challengeStarted = false;
 
   // Initialize particles
   createParticles();
+
+  // Function to start the challenge
+  window.startChallenge = function() {
+    if (challengeStarted) return;
+    challengeStarted = true;
+
+    // Hide challenge screen
+    challengeScreen.classList.add('hidden');
+
+    // Show envelope at random corner position after a short delay
+    setTimeout(() => {
+      // Choose a random corner (0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right)
+      const corner = Math.floor(Math.random() * 4);
+      const margin = 150;
+      
+      let startLeft, startTop;
+      
+      switch(corner) {
+        case 0: // Top-left
+          startLeft = margin;
+          startTop = margin + 50;
+          break;
+        case 1: // Top-right
+          startLeft = window.innerWidth - margin;
+          startTop = margin + 50;
+          break;
+        case 2: // Bottom-left
+          startLeft = margin;
+          startTop = window.innerHeight - margin;
+          break;
+        case 3: // Bottom-right
+          startLeft = window.innerWidth - margin;
+          startTop = window.innerHeight - margin;
+          break;
+      }
+      
+      // Set initial corner position
+      envelopeContainer.style.left = startLeft + 'px';
+      envelopeContainer.style.top = startTop + 'px';
+      envelopeContainer.classList.add('visible');
+      
+      setTimeout(() => {
+        envelopeContainer.classList.add('moving');
+        
+        // Start moving to random positions after appearing
+        setTimeout(() => {
+          moveEnvelopeRandomly();
+          
+          // Continue moving every 0.5 seconds (ultra fast!)
+          moveInterval = setInterval(() => {
+            moveEnvelopeRandomly();
+          }, 500);
+        }, 800);
+      }, 500);
+    }, 500);
+  };
+
+  // Function to move envelope to random position
+  function moveEnvelopeRandomly() {
+    if (isOpened) return;
+    
+    // Calculate safe boundaries (accounting for envelope size and margins)
+    const margin = 100; // pixels from edge
+    const minLeft = margin;
+    const maxLeft = window.innerWidth - margin;
+    const minTop = 150; // Below title
+    const maxTop = window.innerHeight - 150; // Above footer
+    
+    // Generate random position
+    const randomLeft = Math.random() * (maxLeft - minLeft) + minLeft;
+    const randomTop = Math.random() * (maxTop - minTop) + minTop;
+    
+    // Apply new position
+    envelopeContainer.style.left = randomLeft + 'px';
+    envelopeContainer.style.top = randomTop + 'px';
+    
+    // Add slight rotation for dynamic effect
+    const randomRotation = (Math.random() - 0.5) * 15;
+    envelopeContainer.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
+  }
 
   // Enhanced envelope click handler
   envelope.addEventListener("click", (e) => {
     if (isOpened) return;
     isOpened = true;
 
+    // Stop the movement
+    clearInterval(moveInterval);
+    envelopeContainer.classList.add("caught");
+    envelopeContainer.style.transition = 'none';
+
+    // Move envelope to center for the reveal
+    envelopeContainer.style.left = '50%';
+    envelopeContainer.style.top = '50%';
+    envelopeContainer.style.transform = 'translate(-50%, -50%)';
+
     // Create floating hearts at click position
     const rect = envelope.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
       setTimeout(() => {
         createFloatingHeart(
           rect.left + x + (Math.random() - 0.5) * 100,
           rect.top + y + (Math.random() - 0.5) * 100
         );
-      }, i * 200);
+      }, i * 150);
     }
 
     envelope.classList.add("open");
@@ -483,7 +698,7 @@
   // Add hover effect for envelope
   envelope.addEventListener("mouseenter", () => {
     if (!isOpened) {
-      envelope.style.transform = "translateY(-5px) scale(1.02)";
+      envelope.style.transform = "translateY(-8px) scale(1.05)";
     }
   });
 
